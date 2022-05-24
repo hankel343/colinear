@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class BruteCollinearPoints {
     private LineSegment[] lines;
 
@@ -12,10 +10,11 @@ public class BruteCollinearPoints {
                 throw new IllegalArgumentException();
         }
 
-        Arrays.sort(points);
         for (int i = 0; i < points.length - 1; i++) { //Check for the same points
-            if (points[i].compareTo(points[i + 1]) == 0)
-                throw new IllegalArgumentException();
+            for (int j = i + 1; j < points.length; j++) {
+                if (points[i].compareTo(points[j]) == 0)
+                    throw new IllegalArgumentException();
+            }
         }
 
         /* Algorithm */
