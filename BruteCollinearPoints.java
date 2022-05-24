@@ -1,23 +1,21 @@
 public class BruteCollinearPoints {
     private LineSegment[] lines;
 
-    public BruteCollinearPoints(Point[] points)  // finds all line segments containing 4 points
-    {
-        /* Exception handling */
-        if (points == null) throw new IllegalArgumentException();
-        for (int i = 0; i < points.length; i++) { //Check for null elements
-            if (points[i] == null)
+    private void Validate(Point[] points) { //Exception handling
+        if (points == null)
+            throw new IllegalArgumentException();
+
+        for (int i = 0; i < points.length - 1; i++) {
+            if (points[i] == null || points[i + 1] == null
+                    || points[i].compareTo(points[i + 1]) == 0)
                 throw new IllegalArgumentException();
         }
+    }
 
-        for (int i = 0; i < points.length - 1; i++) { //Check for the same points
-            for (int j = i + 1; j < points.length; j++) {
-                if (points[i].compareTo(points[j]) == 0)
-                    throw new IllegalArgumentException();
-            }
-        }
+    public BruteCollinearPoints(Point[] points)  // finds all line segments containing 4 points
+    {
+        Validate(points);
 
-        /* Algorithm */
         lines = new LineSegment[points.length / 4]; //Create line array
         int i = 0; //Iterator for lines array
         for (int p = 0; p < points.length; p++) { //p
