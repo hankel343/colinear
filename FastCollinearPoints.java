@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class FastCollinearPoints {
 
     private LineSegment[] lines;
@@ -15,15 +17,30 @@ public class FastCollinearPoints {
 
     public FastCollinearPoints(Point[] points) {
         Validate(points);
-        
+
+        lines = new LineSegment[points.length / 4];
+        Arrays.sort(points, points[0].slopeOrder());
+
+        int k = 0; //k = lines iterator, i = array iterator
+        for (int i = 0; i < points.length; i++) {
+            int cnt = 1, j = i + 1;
+            while (j < points.length && points[j].slopeTo(points[j - 1]) == 0) {
+                cnt++;
+                j++;
+            }
+
+            if (cnt >= 3) {
+                lines[k++] = new LineSegment(points[i], points[j]);
+            }
+        }
     }
 
     public int numberOfSegments() {        // the number of line segments
-
+        return lines.length;
     }
 
     public LineSegment[] segments() {        // the line segments
-
+        return lines;
     }
 
     public static void main(String[] args) {
