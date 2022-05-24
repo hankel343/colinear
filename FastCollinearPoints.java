@@ -19,17 +19,19 @@ public class FastCollinearPoints {
         Validate(points);
 
         lines = new LineSegment[points.length / 4];
-        Arrays.sort(points, points[0].slopeOrder());
+        Arrays.sort(points, points[0].slopeOrder()); // Sort according to slope.
 
-        int k = 0; //k = lines iterator, i = array iterator
+        int k = 0; //k = lines iterator
         for (int i = 0; i < points.length; i++) {
-            int cnt = 1, j = i + 1;
-            while (j < points.length && points[j].slopeTo(points[j - 1]) == 0) {
+            int cnt = 1, j = i;
+            while (j < points.length && points[j].slopeTo(points[j + 1])
+                    == 0) { //Find collinear points in the Points array
                 cnt++;
                 j++;
             }
 
-            if (cnt >= 3) {
+            i = j; //disqualifies duplicate lines
+            if (cnt > 3) { //Line of 4 points or greater
                 lines[k++] = new LineSegment(points[i], points[j]);
             }
         }
