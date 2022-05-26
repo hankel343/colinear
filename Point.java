@@ -21,8 +21,8 @@ public class Point implements Comparable<Point> {
         public int compare(Point a, Point b) {
             double s1 = slopeTo(a);
             double s2 = slopeTo(b);
-            if (s1 < s2) return -1;
-            else if (s1 > s2) return 1;
+            if (s1 < s2) return 1;
+            else if (s1 > s2) return -1;
             else return 0;
         }
     }
@@ -74,7 +74,8 @@ public class Point implements Comparable<Point> {
         else if (this.y - that.y == 0) return 0.0;
         else if (this.y == that.y && this.x == that.x) return Double.NEGATIVE_INFINITY;
 
-        return (double) (this.y - that.y) / (this.x - that.x);
+        double slope = (double) (this.y - that.y) / (this.x - that.x);
+        return slope;
     }
 
     /**
