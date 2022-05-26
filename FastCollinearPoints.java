@@ -8,6 +8,16 @@ public class FastCollinearPoints {
 
     private LineSegment[] lines;
 
+    private void NaturalSort(Point[] points) {
+        for (int i = 1; i < points.length; i++) {   //Sort according to natural order
+            for (int j = i; j > 0 && points[j].compareTo(points[j - 1]) < 0; j--) {
+                Point temp = points[j];
+                points[j] = points[j - 1];
+                points[j - 1] = temp;
+            }
+        }
+    }
+
     private void Validate(Point[] points) {
         if (points == null)
             throw new IllegalArgumentException();
@@ -22,22 +32,33 @@ public class FastCollinearPoints {
     public FastCollinearPoints(Point[] points) {
         Validate(points);
 
-        Point p = points[0]; //Reference point (i.e. origin)
         lines = new LineSegment[points.length / 4];
-        Arrays.sort(points, p.slopeOrder()); // Sort according to slope
 
-        int k = 0; //k = lines iterator
-        for (int i = 0; i < points.length - 1; i++) {
-            int cnt = 1, j = i;
-            while (j < points.length && p.slopeTo(points[j]) == p.slopeTo(points[j + 1])) {
-                cnt++;
-                j++;
-            }
+        int n = 0;  //Iterator for lines array
+        for (int i = 0; i < points.length; i++) {
+            NaturalSort(points);
+            Point pivot = points[i];
+            Arrays.sort(points, pivot.slopeOrder());
 
-            if (cnt >= 3) { //Line of 4 points or greater
-                lines[k++] = new LineSegment(points[i], points[j]);
+            for (int j = 1; j < points.length - 1; j++) {
+                double prevSlope = points[j - 1].slopeTo(points[j]);
+                int cnt = 1, k = j + 1;
+                int min = j - 1;
+                while (k < points.length) {
+                    if (points[k].slopeTo(points[k - 1]) == prevSlope) {
+                        prevSlope = points[k].slopeTo(points[k - 1]);
+                        cnt++;
+                        k++;
+                    }
+                    else break;
+                }
+
+                if (cnt >= 3) {
+                    if (points[min].compareTo(points[min + 1]) < 0)
+                        lines[n++] = new LineSegment(points[min], points[k - 1]);
+                }
+                j = k - 1;
             }
-            i = j; //disqualifies duplicate lines
         }
     }
 
