@@ -6,6 +6,13 @@ import java.util.LinkedList;
 
 public class BruteCollinearPoints {
     private LinkedList<LineSegment> lines = new LinkedList<LineSegment>();
+    private Point[] copy;
+
+    private void copy(Point[] points) {
+        copy = new Point[points.length];
+        for (int i = 0; i < points.length; i++)
+            copy[i] = points[i];
+    }
 
     private void NaturalOrderSort(Point[] points) {
         for (int i = 1; i < points.length; i++) {   //Sort according to natural order
@@ -21,9 +28,12 @@ public class BruteCollinearPoints {
         if (points == null)
             throw new IllegalArgumentException();
 
+        for (int i = 0; i < points.length; i++)
+            if (points[i] == null)
+                throw new IllegalArgumentException();
+
         for (int i = 0; i < points.length - 1; i++) {
-            if (points[i] == null || points[i + 1] == null
-                    || points[i].compareTo(points[i + 1]) == 0)
+            if (points[i].compareTo(points[i + 1]) == 0)
                 throw new IllegalArgumentException();
         }
     }
@@ -32,15 +42,17 @@ public class BruteCollinearPoints {
     {
         Validate(points);
 
-        NaturalOrderSort(points);
+        copy(points);
 
-        for (int p = 0; p < points.length; p++) { //p
-            for (int q = p + 1; q < points.length; q++) { //q
-                for (int r = q + 1; r < points.length; r++) { //r
-                    for (int s = r + 1; s < points.length; s++) { //s
-                        if (points[p].slopeTo(points[q]) == points[q].slopeTo(points[r]) &&
-                                points[q].slopeTo(points[r]) == points[r].slopeTo(points[s])) {
-                            lines.add(new LineSegment(points[p], points[s]));
+        NaturalOrderSort(copy);
+
+        for (int p = 0; p < copy.length; p++) { //p
+            for (int q = p + 1; q < copy.length; q++) { //q
+                for (int r = q + 1; r < copy.length; r++) { //r
+                    for (int s = r + 1; s < copy.length; s++) { //s
+                        if (copy[p].slopeTo(copy[q]) == copy[q].slopeTo(copy[r]) &&
+                                copy[q].slopeTo(copy[r]) == copy[r].slopeTo(copy[s])) {
+                            lines.add(new LineSegment(copy[p], copy[s]));
                         }
                     }
                 }
