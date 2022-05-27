@@ -2,8 +2,20 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 
+import java.util.LinkedList;
+
 public class BruteCollinearPoints {
-    private LineSegment[] lines;
+    private LinkedList<LineSegment> lines = new LinkedList<LineSegment>();
+
+    private void NaturalSort(Point[] points) {
+        for (int i = 1; i < points.length; i++) {   //Sort according to natural order
+            for (int j = i; j > 0 && points[j].compareTo(points[j - 1]) < 0; j--) {
+                Point temp = points[j];
+                points[j] = points[j - 1];
+                points[j - 1] = temp;
+            }
+        }
+    }
 
     private void Validate(Point[] points) { //Exception handling
         if (points == null)
@@ -20,7 +32,8 @@ public class BruteCollinearPoints {
     {
         Validate(points);
 
-        lines = new LineSegment[points.length / 4]; //Create line array
+        NaturalSort(points);
+
         int i = 0; //Iterator for lines array
         for (int p = 0; p < points.length; p++) { //p
             for (int q = p + 1; q < points.length; q++) { //q
@@ -28,23 +41,22 @@ public class BruteCollinearPoints {
                     for (int s = r + 1; s < points.length; s++) { //s
                         if (points[p].slopeTo(points[q]) == points[q].slopeTo(points[r]) &&
                                 points[q].slopeTo(points[r]) == points[r].slopeTo(points[s])) {
-                            lines[i++] = new LineSegment(points[p], points[s]);
+                            lines.add(new LineSegment(points[p], points[s]));
                         }
                     }
                 }
             }
         }
-
     }
 
     public int numberOfSegments()   // the number of line segments
     {
-        return lines.length;
+        return lines.size();
     }
 
     public LineSegment[] segments() // the line segments
     {
-        return lines;
+        return lines.toArray(new LineSegment[lines.size()]);
     }
 
     public static void main(String[] args) {
@@ -68,7 +80,7 @@ public class BruteCollinearPoints {
         StdDraw.show();
 
         // print and draw the line segments
-        FastCollinearPoints collinear = new FastCollinearPoints(points);
+        BruteCollinearPoints collinear = new BruteCollinearPoints(points);
         for (LineSegment segment : collinear.segments()) {
             StdOut.println(segment);
             segment.draw();
