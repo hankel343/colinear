@@ -7,7 +7,7 @@ import java.util.LinkedList;
 public class BruteCollinearPoints {
     private LinkedList<LineSegment> lines = new LinkedList<LineSegment>();
 
-    private void NaturalSort(Point[] points) {
+    private void NaturalOrderSort(Point[] points) {
         for (int i = 1; i < points.length; i++) {   //Sort according to natural order
             for (int j = i; j > 0 && points[j].compareTo(points[j - 1]) < 0; j--) {
                 Point temp = points[j];
@@ -32,9 +32,8 @@ public class BruteCollinearPoints {
     {
         Validate(points);
 
-        NaturalSort(points);
+        NaturalOrderSort(points);
 
-        int i = 0; //Iterator for lines array
         for (int p = 0; p < points.length; p++) { //p
             for (int q = p + 1; q < points.length; q++) { //q
                 for (int r = q + 1; r < points.length; r++) { //r
