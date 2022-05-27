@@ -3,10 +3,11 @@ import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class FastCollinearPoints {
 
-    private LineSegment[] lines;
+    private LinkedList<LineSegment> lines = new LinkedList<LineSegment>();
 
     private void NaturalSort(Point[] points) {
         for (int i = 1; i < points.length; i++) {   //Sort according to natural order
@@ -32,42 +33,39 @@ public class FastCollinearPoints {
     public FastCollinearPoints(Point[] points) {
         Validate(points);
 
-        lines = new LineSegment[points.length / 4];
-
-        int n = 0;  //Iterator for lines array
         for (int i = 0; i < points.length; i++) {
             NaturalSort(points);
             Point pivot = points[i];
             Arrays.sort(points, pivot.slopeOrder());
 
-            for (int j = 1; j < points.length - 1; j++) {
-                double prevSlope = points[j - 1].slopeTo(points[j]);
-                int cnt = 1, k = j + 1;
-                int min = j - 1;
-                while (k < points.length) {
-                    if (points[k].slopeTo(points[k - 1]) == prevSlope) {
-                        prevSlope = points[k].slopeTo(points[k - 1]);
-                        cnt++;
-                        k++;
-                    }
-                    else break;
-                }
+            for (int p = 0; p < points.length; p++) {
+                for (int q = p + 1; q < points.length - 1; q++) {
+                    if (Double
+                            .compare(points[p].slopeTo(points[q]), points[q].slopeTo(points[q + 1]))
+                            == 0) {
+                        double slope = points[q].slopeTo(points[q + 1]);
+                        int r = q + 1, cnt = 1;
+                        while (r < points.length && points[q].slopeTo(points[r]) == slope) {
+                            cnt++;
+                            r++;
+                        }
 
-                if (cnt >= 3) {
-                    if (points[min].compareTo(points[min + 1]) < 0)
-                        lines[n++] = new LineSegment(points[min], points[k - 1]);
+                        if (cnt >= 3) {
+                            if (points[p].compareTo(points[q]) < 0)
+                                lines.add(new LineSegment(points[p], points[r - 1]));
+                        }
+                    }
                 }
-                j = k - 1;
             }
         }
     }
 
     public int numberOfSegments() {        // the number of line segments
-        return lines.length;
+        return lines.size();
     }
 
     public LineSegment[] segments() {        // the line segments
-        return lines;
+        return lines.toArray(new LineSegment[lines.size()]);
     }
 
     public static void main(String[] args) {
